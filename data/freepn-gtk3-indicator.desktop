@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Freepn Tray Control
+Comment=Control and status tool for fpnd
+Exec=freepn-gtk3-indicator
+Icon=freepn
+Terminal=false
+Type=Application
+StartupNotify=false
+Categories=Network;GNOME;GTK;Utility;

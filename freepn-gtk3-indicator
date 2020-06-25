@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+
+import signal
+import json
+import xmltodict
+import urllib.request
+
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('AppIndicator3', '0.1')
+gi.require_version('Notify', '0.7')
+from gi.repository import Gtk, AppIndicator3, Notify
+
+
+APPINDICATOR_ID = 'freepn'
+
+
+def fetch_geoip():
+    request = urllib.request.Request('https://geoip.ubuntu.com/lookup')
+    response = urllib.request.urlopen(request)
+    payload = xmltodict.parse(response.read())
+    return json.dumps(payload, indent=4, separators=(',', ': '))
+
+
+def fetch_joke():
+    request = urllib.request.Request('http://api.icndb.com/jokes/random?limitTo=[nerdy]')
+    response = urllib.request.urlopen(request)
+    joke = json.loads(response.read())['value']['joke']
+    return joke
+
+
+class Indicator():
+    def __init__(self):
+        self.app_id = APPINDICATOR_ID
+        icon_name = 'network-offline'
+        self.trayindicator = AppIndicator3.Indicator.new(
+            self.app_id,
+            icon_name,
+            AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
+        self.trayindicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+        self.trayindicator.set_menu(self.create_menu())
+
+    def create_menu(self):
+        menu = Gtk.Menu()
+        item_start = Gtk.MenuItem(label='Start')
+        item_start.connect('activate', self.startd)
+        menu.append(item_start)
+        item_stop = Gtk.MenuItem(label='Stop')
+        item_stop.connect('activate', self.stopd)
+        menu.append(item_stop)
+        item_geoip = Gtk.MenuItem(label='Geoip')
+        item_geoip.connect('activate', self.geoip)
+        menu.append(item_geoip)
+        item_joke = Gtk.MenuItem(label='Joke')
+        item_joke.connect('activate', self.joke)
+        menu.append(item_joke)
+        item_quit = Gtk.MenuItem(label='Quit')
+        item_quit.connect('activate', self.stop)
+        menu.append(item_quit)
+        menu.show_all()
+        return menu
+
+    def stop(self, source):
+        Notify.uninit()
+        Gtk.main_quit()
+
+    def joke(self, source):
+        Notify.Notification.new("Joke", fetch_joke(), None).show()
+
+    def geoip(self, source):
+        Notify.Notification.new("Geoip", fetch_geoip(), None).show()
+
+    def startd(self, source):
+        self.trayindicator.set_icon('network-transmit-receive')
+
+    def stopd(self, source):
+        self.trayindicator.set_icon('network-offline')
+
+
+def main():
+    Indicator()
+    Notify.init(APPINDICATOR_ID)
+    Gtk.main()
+
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    main()
