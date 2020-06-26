@@ -67,9 +67,9 @@ def run_service_cmd(action='status'):
 
         if err:
             print('run_service_cmd err result: {}'.format(err.decode().strip()))
-            result = err.decode().strip()
+            result = err.decode()
         elif out:
-            result = out.decode().strip()
+            result = out.decode()
             print('{} result: {}'.format(action, out.decode().strip()))
 
     except Exception as exc:
