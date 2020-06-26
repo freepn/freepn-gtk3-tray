@@ -29,6 +29,45 @@ def fetch_joke():
     return joke
 
 
+def run_systemctl(action='status'):
+    """
+    Run systemctl command on fpnd service.
+
+    :param action: one of <start|stop|status>
+    :return true|false: command success
+    """
+    import subprocess
+
+    actions = ['start', 'stop', 'status']
+    result = False
+
+    if action in actions:
+        cmd = ['systemctl --no-pager', action, 'fpnd.service']
+    else:
+        logger.error('Invalid action: {}'.format(action))
+        return result
+
+    try:
+        b = subprocess.Popen(cmd,
+                             stderr=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             shell=False)
+
+        out, err = b.communicate()
+
+        if err:
+            logger.error('run_systemctl err result: {}'.format(err.decode().strip()))
+        elif 'fpnd.service' in out.decode().strip():
+            result = True
+            logger.debug('{} result: {}'.format(action, out.decode().strip()))
+
+    except Exception as exc:
+        logger.error('run_systemctl exception: {}'.format(exc))
+        pass
+
+    return result
+
+
 class Indicator():
     def __init__(self):
         self.app_id = APPINDICATOR_ID
@@ -38,6 +77,7 @@ class Indicator():
             icon_name,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
         self.trayindicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+        self.trayindicator.set_attention_icon("indicator-messages-new")
         self.trayindicator.set_menu(self.create_menu())
 
     def create_menu(self):
