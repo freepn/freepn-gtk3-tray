@@ -40,7 +40,6 @@ setup(
     scripts=['freepn-gtk3-indicator'],
     data_files=[
         ('share/applications', ['data/freepn-gtk3-indicator.desktop']),
-        ('share/icons', ['icons/48x48/freepn.png']),
         ('share/icons/hicolor/48x48/apps', ['icons/48x48/freepn.png']),
         ('share/icons/hicolor/scalable/apps', ['icons/scalable/freepn.svg']),
     ],

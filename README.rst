@@ -1,6 +1,6 @@
-====================================================
- freepn-gtk3-tray - Control and status GUI for fpnd
-====================================================
+============================================
+ freepn-gtk3-tray - fpnd control/status GUI
+============================================
 
 This is currently a (barely) working skeleton for a tray contoller GUI to go
 with the `freepn/fpnd`_ daemon.  It depends on PyGobject and GTK+3 and the
