@@ -39,7 +39,7 @@ setup(
     keywords=['freepn', 'vpn', 'p2p'],
     scripts=['freepn-gtk3-indicator'],
     data_files=[
-        ('share/man', ['data/freepn-gtk3-indicator.1']),
+        ('share/man/man1', ['data/freepn-gtk3-indicator.1']),
         ('share/applications', ['data/freepn-gtk3-indicator.desktop']),
         ('share/icons/hicolor/48x48/apps', ['icons/48x48/freepn.png']),
         ('share/icons/hicolor/scalable/apps', ['icons/scalable/freepn.svg']),
