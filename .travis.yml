@@ -1,0 +1,23 @@
+language: python
+
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.9"
+  - "nightly"
+
+# command to install dependencies
+install:
+  - pip install tox-travis
+
+# command to run tests (no tests yet)
+script:
+  - tox -e lint
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - python: "3.9-dev"
+    - python: "nightly"
