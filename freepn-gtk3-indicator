@@ -29,22 +29,24 @@ def fetch_joke():
     return joke
 
 
-def run_service_cmd(action='status'):
+def run_service_cmd(action='is-active'):
     """
     Run systemctl command on fpnd service.
 
-    :param action: one of <start|stop|status>
-    :return true|false: command success
+    :param action: one of <start|stop>
+    :return: cmd result or empty str
     """
     import os
     import subprocess
 
     result = ''
-    actions = ['start', 'stop', 'status']
-    svc_list = ['systemctl, --no-pager']
+    actions = ['start', 'stop', 'status', 'is-active']
+    svc_list = ['pkexec', 'systemctl']
     act_list = [action, 'fpnd.service']
 
     if os.path.isfile('/sbin/openrc'):
+        if action == 'is-active':
+            action = 'status'
         svc_list = ['pkexec', '/sbin/openrc', '-s']
         act_list = ['fpnd', action]
     cmd = svc_list + act_list
@@ -68,7 +70,7 @@ def run_service_cmd(action='status'):
         if err:
             print('run_service_cmd err result: {}'.format(err.decode().strip()))
             result = err.decode()
-        elif out:
+        else:
             result = out.decode()
             print('{} result: {}'.format(action, out.decode().strip()))
 
@@ -89,8 +91,8 @@ class Indicator():
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
 
         self.trayindicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
-        self.trayindicator.set_attention_icon_full('indicator-messages-new',
-                                                   'State update')
+        # self.trayindicator.set_attention_icon_full('indicator-messages-new',
+        #                                            'State update')
         self.trayindicator.set_menu(self.create_menu())
 
     def create_menu(self):
@@ -115,6 +117,9 @@ class Indicator():
         item_joke.connect('activate', self.joke)
         menu.append(item_joke)
 
+        item_separator = Gtk.SeparatorMenuItem()
+        menu.append(item_separator)
+
         item_quit = Gtk.MenuItem(label='Quit')
         item_quit.connect('activate', self.stop)
         menu.append(item_quit)
@@ -134,16 +139,20 @@ class Indicator():
 
     def startd(self, source):
         svc_msg = run_service_cmd(action='start')
-        self.trayindicator.set_icon_full('network-transmit-receive-symbolic',
+        if not svc_msg:
+            svc_msg = 'Starting...'
+        self.trayindicator.set_icon_full('network-vpn-symbolic',
                                          'Daemon active')
         Notify.Notification.new("Daemon status", svc_msg, None).show()
 
     def statusd(self, source):
-        svc_msg = run_service_cmd(action='status')
+        svc_msg = run_service_cmd()
         Notify.Notification.new("Daemon status", svc_msg, None).show()
 
     def stopd(self, source):
         svc_msg = run_service_cmd(action='stop')
+        if not svc_msg:
+            svc_msg = 'Stopping...'
         self.trayindicator.set_icon_full('network-offline-symbolic',
                                          'Daemon inactive')
         Notify.Notification.new("Daemon status", svc_msg, None).show()
