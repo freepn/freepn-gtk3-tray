@@ -1,3 +1,4 @@
+pip>=19.0.1
+wheel
 PyGObject
-setuptools
-pytest
+xmltodict

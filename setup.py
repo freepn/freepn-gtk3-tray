@@ -2,10 +2,7 @@
 """Setup file for freepn-gtk3-indicator."""
 import codecs
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from distutils.core import setup
 
 
 def read_file(filename):

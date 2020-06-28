@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
+import os
+import subprocess
 import signal
 import json
-import xmltodict
 import urllib.request
 
+import xmltodict
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
-from gi.repository import Gtk, AppIndicator3, Notify
+from gi.repository import Gtk, AppIndicator3, Notify  # noqa
 
 
 APPINDICATOR_ID = 'fpndindicator'
@@ -36,8 +38,6 @@ def run_service_cmd(action='is-active'):
     :param action: one of <start|stop>
     :return: cmd result or empty str
     """
-    import os
-    import subprocess
 
     result = ''
     actions = ['start', 'stop', 'status', 'is-active']
