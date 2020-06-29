@@ -22,6 +22,22 @@ in the freepn-gtk3-tray ebuild and deb packages linked in the fpnd readme.
 Lastly, the fpnd packages will install the polkit (or sudo) rules required
 for the daemon controller commands in the the GUI app.
 
+Install
+-------
+
+Following the `fpnd`_ install, use the appropriate package manager to install
+the package for your distro:
+
+* Gentoo - ``sudo emerge freepn-gtk3-tray``
+* Ubuntu - ``sudo apt-get install freepn-gtk3-indicator``
+
+Use
+---
+
+Start the app from the Internet menu in your desktop of choice, eg, Gnome
+or Xfce.  You can also add it to your session startup or run it from an X
+terminal to get some debug output.
+
 
 .. _fpnd: https://github.com/freepn/fpnd
 
