@@ -8,6 +8,10 @@ python:
   - "3.9"
   - "nightly"
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install libgirepository1.0-dev -y
+
 # command to install dependencies
 install:
   - pip install tox-travis
