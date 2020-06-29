@@ -1,4 +1,5 @@
 pip>=19.0.1
 wheel
+pycairo
 pygobject
 xmltodict

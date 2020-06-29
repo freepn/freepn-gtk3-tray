@@ -10,11 +10,12 @@ python:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y libgirepository1.0-dev python3-gi gir1.2-notify-0.7 gir1.2-gtk-3.0 gir1.2-appindicator3-0.1
+  - sudo apt-get -y build-dep pygobject
+  - sudo apt-get install -y pkg-config python3-xmltodict
+  - sudo apt-get install -y gir1.2-notify-0.7 gir1.2-gtk-3.0 gir1.2-appindicator3-0.1
 
 # command to install dependencies
 install:
-  - pip install xmltodict
   - pip install tox-travis
 
 # command to run tests (no tests yet)
