@@ -10,7 +10,7 @@ python:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install libgirepository1.0-dev -y
+  - sudo apt-get install libgirepository1.0-dev libcairo2-dev -y
 
 # command to install dependencies
 install:

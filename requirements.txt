@@ -1,4 +1,4 @@
 pip>=19.0.1
 wheel
-PyGObject
+pygobject
 xmltodict
