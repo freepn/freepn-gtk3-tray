@@ -5,6 +5,17 @@
 freepn-gtk3-tray is a daemon control and status application for `fpnd`_ on
 Linux.
 
+.. image:: https://img.shields.io/github/license/freepn/freepn-gtk3-tray
+    :target: https://github.com/freepn/freepn-gtk3-tray/blob/master/LICENSE
+
+.. image:: https://img.shields.io/github/v/tag/freepn/freepn-gtk3-tray?color=green&include_prereleases&label=latest%20release
+    :target: https://github.com/freepn/freepn-gtk3-tray/releases
+    :alt: GitHub tag (latest SemVer, including pre-release)
+
+.. image:: https://travis-ci.org/freepn/freepn-gtk3-tray.svg?branch=master
+    :target: https://travis-ci.org/freepn/freepn-gtk3-tray
+
+
 And by "application" we mean a simple appindicator-based GUI which is
 basically just an icon with a menu. It loads in the indicator area or the
 system tray (whatever is available in your desktop environment). The icon's
