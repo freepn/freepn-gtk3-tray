@@ -5,15 +5,16 @@ python:
   - "3.6"
   - "3.7"
   - "3.8"
-  - "3.9"
+  - "3.9-dev"
   - "nightly"
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install libgirepository1.0-dev libcairo2-dev -y
+  - sudo apt-get install python3-gi gir1.2-gtk-3.0 gir1.2-appindicator3-0.1 gir1.2-notify-0.7
 
 # command to install dependencies
 install:
+  - pip install xmltodict
   - pip install tox-travis
 
 # command to run tests (no tests yet)
