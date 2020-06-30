@@ -15,6 +15,9 @@ Linux.
 .. image:: https://travis-ci.org/freepn/freepn-gtk3-tray.svg?branch=master
     :target: https://travis-ci.org/freepn/freepn-gtk3-tray
 
+.. image:: https://img.shields.io/codeclimate/maintainability/freepn/freepn-gtk3-tray
+    :target: https://codeclimate.com/github/freepn/freepn-gtk3-tray
+
 
 And by "application" we mean a simple appindicator-based GUI which is
 basically just an icon with a menu. It loads in the indicator area or the
