@@ -8,13 +8,34 @@ import urllib.request
 
 import xmltodict
 import gi
+
+from multiprocessing import Process
+from nanoservice import Subscriber
+
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 from gi.repository import Gtk, AppIndicator3, Notify  # noqa
 
-
 APPINDICATOR_ID = 'fpndindicator'
+socket_addr = 'ipc://{}/{}'.format('/run/fpnd', 'fpnd.sock')
+
+
+def log(message):
+    print('Subscriber got new message: {}'.format(message))
+
+
+def start_listener(addr):
+    """ Start a subscriber service with options """
+    s = Subscriber(addr, bind=True)
+    s.subscribe('diff', log)
+    s.start()
+
+
+def create_listen_proc():
+    msg_listener = Process(target=start_listener, args=(socket_addr,))
+    print('Listening on socket {}'.format(socket_addr))
+    return msg_listener
 
 
 def fetch_geoip():
@@ -33,7 +54,8 @@ def fetch_joke():
 
 def run_service_cmd(action='is-active'):
     """
-    Run systemctl command on fpnd service.
+    Run systemctl command on fpnd service.  We assumne systemd is default
+    and fallback to openrc.
 
     :param action: one of <start|stop>
     :return: cmd result or empty str
@@ -44,7 +66,8 @@ def run_service_cmd(action='is-active'):
     svc_list = ['pkexec', 'systemctl']
     act_list = [action, 'fpnd.service']
 
-    if os.path.isfile('/sbin/openrc'):
+    if os.path.exists('/run/openrc'):
+        # this is not the systemd init we are looking for
         if action == 'is-active':
             action = 'status'
         svc_list = ['pkexec', '/sbin/openrc', '-s']
@@ -128,6 +151,7 @@ class Indicator():
         return menu
 
     def stop(self, source):
+        msg_proc.terminate()
         Notify.uninit()
         Gtk.main_quit()
 
@@ -159,6 +183,8 @@ class Indicator():
 
 
 def main():
+    msg_proc = create_listen_proc()
+    msg_proc.start()
     Indicator()
     Notify.init(APPINDICATOR_ID)
     Gtk.main()
