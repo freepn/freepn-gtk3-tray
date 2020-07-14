@@ -17,7 +17,7 @@ def read_file(filename):
 #REL_TAG = FPND_VERSION.replace('-', 'p')
 
 APP_ID      = 'freepn-gtk3-indicator'
-APP_VERSION = '0.0.2'
+APP_VERSION = '0.0.3'
 
 APP_DOWNLOAD_URL = (
     'https://github.com/freepn/freepn-gtk3-tray/tarball/' + APP_VERSION
