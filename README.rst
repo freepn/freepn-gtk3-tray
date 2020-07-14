@@ -23,18 +23,19 @@ And by "application" we mean a simple appindicator-based GUI which is
 basically just an icon with a menu. It loads in the indicator area or the
 system tray (whatever is available in your desktop environment). The icon's
 menu allows you to start and stop the daemon, as well as get daemon status
-and query the Ubuntu geoip location server.
+and query the Ubuntu geoip location server.  The tray icon appearence will
+update to show the current state of the network daemon.
 
 Functionally this app does (almost) nothing without having the above `fpnd`_
-package installed, although it does not currently require it as a package
-dependency.
+package installed, however, the latest freepn-gtk3-tray packages now depend
+on the appropriate `fpnd`_ packages (for both Ubuntu and Gentoo).
 
-It also depends on PyGobject, a GTK+3 desktop environment, and the associated
+This app also depends on PyGobject, a GTK+3 desktop environment, and the associated
 gobject introspection libraries.  The minimal package deps are currently used
 in the freepn-gtk3-tray ebuild and deb packages linked in the fpnd readme.
 
-Lastly, the fpnd packages will install the polkit (or sudo) rules required
-for the daemon controller commands in the the GUI app.
+Lastly, the fpnd packages will install the polkit rules required for the
+daemon controller commands used in the the GUI app.
 
 Install
 -------
@@ -50,7 +51,9 @@ Use
 
 Start the app from the Internet menu in your desktop of choice, eg, Gnome
 or Xfce.  You can also add it to your session startup or run it from an X
-terminal to get some debug output.
+terminal to get some debug output::
+
+  $ ./freepn-gtk3-indicator
 
 
 .. _fpnd: https://github.com/freepn/fpnd
