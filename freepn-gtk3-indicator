@@ -1,23 +1,61 @@
 #!/usr/bin/env python3
 
-import os
-import subprocess
-import signal
 import json
+import signal
+import subprocess
+import time
 import urllib.request
 
+from pathlib import Path
+from collections import deque
+from threading import Thread
+
 import xmltodict
+
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 from gi.repository import Gtk, AppIndicator3, Notify  # noqa
 
+from node_tools.helper_funcs import get_runtimedir
+
 
 APPINDICATOR_ID = 'fpndindicator'
+state_file = Path(get_runtimedir()).joinpath('fpnd.state')
+
+
+def get_state_icon(state):
+    """
+    Look up the state msg and return the icon name.
+    """
+    state_dict = {
+        'CONNECTED': 'network-vpn-symbolic',
+        'WAITING': 'network-vpn-acquiring-symbolic',
+        'CONFIG': 'network-vpn-no-route-symbolic',
+        'ERROR': 'network-error-symbolic',
+        'STARTING': 'network-idle-symbolic',
+        'NONE': 'network-offline-symbolic'
+    }
+    return state_dict.get(state, state_dict['NONE'])
+
+
+def get_status(filename, n=1):
+    """
+    Return the last n lines of the status file in a deque.
+    """
+    try:
+        with open(filename) as f:
+            return deque(f, n)
+    except Exception as exc:
+        print('State file error: {}'.format(exc))
 
 
 def fetch_geoip():
+    """
+    Fetch location info from ubuntu.com geoip server and transform the
+    xml payload to json.
+    """
     request = urllib.request.Request('https://geoip.ubuntu.com/lookup')
     response = urllib.request.urlopen(request)
     payload = xmltodict.parse(response.read())
@@ -25,6 +63,9 @@ def fetch_geoip():
 
 
 def fetch_joke():
+    """
+    Fetch a random joke from the nerdy category.
+    """
     request = urllib.request.Request('http://api.icndb.com/jokes/random?limitTo=[nerdy]')
     response = urllib.request.urlopen(request)
     joke = json.loads(response.read())['value']['joke']
@@ -44,7 +85,7 @@ def run_service_cmd(action='is-active'):
     svc_list = ['pkexec', 'systemctl']
     act_list = [action, 'fpnd.service']
 
-    if os.path.isfile('/sbin/openrc'):
+    if Path('/sbin/openrc').is_file():
         if action == 'is-active':
             action = 'status'
         svc_list = ['pkexec', '/sbin/openrc', '-s']
@@ -53,19 +94,18 @@ def run_service_cmd(action='is-active'):
 
     if action in actions:
         print('Running {}'.format(cmd))
-        pass
     else:
         msg = 'Invalid action: {}'.format(action)
         print(msg)
         return result
 
     try:
-        b = subprocess.Popen(cmd,
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             shell=False)
+        proc = subprocess.Popen(cmd,
+                                stderr=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                shell=False)
 
-        out, err = b.communicate()
+        out, err = proc.communicate()
 
         if err:
             print('run_service_cmd err result: {}'.format(err.decode().strip()))
@@ -76,7 +116,6 @@ def run_service_cmd(action='is-active'):
 
     except Exception as exc:
         print('run_service_cmd exception: {}'.format(exc))
-        pass
 
     return result
 
@@ -84,16 +123,37 @@ def run_service_cmd(action='is-active'):
 class Indicator():
     def __init__(self):
         self.app_id = APPINDICATOR_ID
-        icon_name = 'network-offline-symbolic'
-        self.trayindicator = AppIndicator3.Indicator.new(
+        icon_name = get_state_icon('NONE')
+        self.indicator = AppIndicator3.Indicator.new(
             self.app_id,
             icon_name,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
 
-        self.trayindicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
-        # self.trayindicator.set_attention_icon_full('indicator-messages-new',
+        self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+        # self.indicator.set_attention_icon_full('indicator-messages-new',
         #                                            'State update')
-        self.trayindicator.set_menu(self.create_menu())
+        self.indicator.set_menu(self.create_menu())
+        # setup the state updater thread
+        self.update = Thread(target=self.check_for_new_state)
+        self.update.setDaemon(True)
+        self.update.start()
+
+    def check_for_new_state(self):
+        """
+        Check for new state msg and update icon if new.
+        """
+        old_state = 'NONE'
+
+        while True:
+            time.sleep(1)
+            if state_file.exists():
+                msg_queue = get_status(str(state_file))
+                new_state = msg_queue.pop().strip()
+            # if there is a change in state, update the icon
+            if old_state != new_state:
+                icon_name = get_state_icon(new_state)
+                self.indicator.set_icon_full(icon_name, new_state)
+            old_state = new_state
 
     def create_menu(self):
         menu = Gtk.Menu()
@@ -141,8 +201,6 @@ class Indicator():
         svc_msg = run_service_cmd(action='start')
         if not svc_msg:
             svc_msg = 'Starting...'
-        self.trayindicator.set_icon_full('network-vpn-symbolic',
-                                         'Daemon active')
         Notify.Notification.new("Daemon status", svc_msg, None).show()
 
     def statusd(self, source):
@@ -153,8 +211,6 @@ class Indicator():
         svc_msg = run_service_cmd(action='stop')
         if not svc_msg:
             svc_msg = 'Stopping...'
-        self.trayindicator.set_icon_full('network-offline-symbolic',
-                                         'Daemon inactive')
         Notify.Notification.new("Daemon status", svc_msg, None).show()
 
 
