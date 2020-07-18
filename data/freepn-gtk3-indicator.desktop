@@ -2,7 +2,7 @@
 Name=Freepn Tray Control
 Comment=Control and status tool for fpnd
 Exec=freepn-gtk3-indicator
-Icon=freepn
+Icon=org.freepn.fpnd
 Terminal=false
 Type=Application
 StartupNotify=false

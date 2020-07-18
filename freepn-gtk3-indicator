@@ -153,6 +153,8 @@ class Indicator():
             if old_state != new_state:
                 icon_name = get_state_icon(new_state)
                 self.indicator.set_icon_full(icon_name, new_state)
+                # Notify.Notification.new(new_state, None, None).show()
+                self.indicator.set_label(new_state, '')
             old_state = new_state
 
     def create_menu(self):

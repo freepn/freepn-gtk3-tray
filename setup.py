@@ -38,8 +38,9 @@ setup(
     data_files=[
         ('share/man/man1', ['data/freepn-gtk3-indicator.1']),
         ('share/applications', ['data/freepn-gtk3-indicator.desktop']),
-        ('share/icons/hicolor/48x48/apps', ['icons/48x48/freepn.png']),
-        ('share/icons/hicolor/scalable/apps', ['icons/scalable/freepn.svg']),
+        ('share/icons/hicolor/48x48/apps', ['icons/hicolor/48x48/org.freepn.fpnd.png']),
+        ('share/icons/hicolor/scalable/apps', ['icons/hicolor/scalable/org.freepn.fpnd.svg']),
+        ('share/icons/hicolor/symbolic/apps', ['icons/hicolor/symbolic/org.freepn.fpnd-symbolic.svg']),
     ],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
