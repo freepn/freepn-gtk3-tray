@@ -13,10 +13,10 @@ from threading import Thread
 import xmltodict
 
 import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('AppIndicator3', '0.1')
-gi.require_version('Notify', '0.7')
-from gi.repository import Gtk, AppIndicator3, Notify  # noqa
+gi.require_version('Gtk', '3.0')  # noqa
+gi.require_version('AppIndicator3', '0.1')  # noqa
+gi.require_version('Notify', '0.7')  # noqa
+from gi.repository import Gtk, AppIndicator3, Notify
 
 from node_tools.helper_funcs import get_runtimedir
 
@@ -143,6 +143,7 @@ class Indicator():
         Check for new state msg and update icon if new.
         """
         old_state = 'NONE'
+        guide = '999999999'
 
         while True:
             time.sleep(1)
@@ -154,7 +155,8 @@ class Indicator():
                 icon_name = get_state_icon(new_state)
                 self.indicator.set_icon_full(icon_name, new_state)
                 # Notify.Notification.new(new_state, None, None).show()
-                self.indicator.set_label(new_state, '')
+                # note the second label arg should be the longest possible label str
+                self.indicator.set_label(new_state.format().center(9), guide)
             old_state = new_state
 
     def create_menu(self):
