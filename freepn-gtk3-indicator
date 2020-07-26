@@ -143,6 +143,7 @@ class Indicator():
         Check for new state msg and update icon if new.
         """
         old_state = 'NONE'
+        new_state = 'NONE'
         guide = '999999999'
 
         while True:
