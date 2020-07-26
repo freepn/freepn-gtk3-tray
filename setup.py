@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Setup file for freepn-gtk3-indicator."""
+import ast
 import codecs
 
 from distutils.core import setup
@@ -12,12 +13,16 @@ def read_file(filename):
     with codecs.open(filename, 'r', 'utf8') as f:
         return f.read()
 
+for line in read_file('freepn-gtk3-indicator').splitlines():
+    if line.startswith('APP_VERSION'):
+        version = ast.literal_eval(line.split('=', 1)[1].strip())
+        break
+
 # make setuptools happy with PEP 440-compliant post version
-# (enable this for patch releases using n.n.n-n)
 #REL_TAG = FPND_VERSION.replace('-', 'p')
 
 APP_ID      = 'freepn-gtk3-indicator'
-APP_VERSION = '0.0.3'
+APP_VERSION = version
 
 APP_DOWNLOAD_URL = (
     'https://github.com/freepn/freepn-gtk3-tray/tarball/' + APP_VERSION

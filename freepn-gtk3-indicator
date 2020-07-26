@@ -18,11 +18,16 @@ gi.require_version('AppIndicator3', '0.1')  # noqa
 gi.require_version('Notify', '0.7')  # noqa
 from gi.repository import Gtk, AppIndicator3, Notify
 
-from node_tools.helper_funcs import get_runtimedir
+try:
+    from node_tools.helper_funcs import get_runtimedir
+    state_file = Path(get_runtimedir()).joinpath('fpnd.state')
+except ImportError:
+    import os
+    state_file = Path(os.path.join('/run/fpnd', 'fpnd.state'))
 
 
 APPINDICATOR_ID = 'fpndindicator'
-state_file = Path(get_runtimedir()).joinpath('fpnd.state')
+APP_VERSION = '0.0.4'
 
 
 def get_state_icon(state):
@@ -185,12 +190,33 @@ class Indicator():
         item_separator = Gtk.SeparatorMenuItem()
         menu.append(item_separator)
 
+        item_about = Gtk.MenuItem(label='About')
+        item_about.connect('activate', self.about)
+        menu.append(item_about)
+
         item_quit = Gtk.MenuItem(label='Quit')
         item_quit.connect('activate', self.stop)
         menu.append(item_quit)
 
         menu.show_all()
         return menu
+
+    def about(self, source):
+        dlg = Gtk.AboutDialog()
+        dlg.set_name('About...')
+        dlg.set_program_name('freepn-gtk3-indicator')
+        dlg.set_version(APP_VERSION)
+        dlg.set_copyright('(c) Stephen L Arnold')
+        dlg.set_license_type(Gtk.License.AGPL_3_0)
+        dlg.set_logo_icon_name('freepn')
+        dlg.set_website('https://github.com/freepn')
+        dlg.set_comments("""
+FreePN network daemon control and status tool.
+                         """)
+        dlg.set_authors(['Stephen L Arnold <nerdboy@gentoo.org>'])
+        dlg.set_artists(['Marianne Cruzat'])
+        dlg.run()
+        dlg.hide()
 
     def stop(self, source):
         Notify.uninit()
