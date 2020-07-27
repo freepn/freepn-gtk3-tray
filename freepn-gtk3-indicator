@@ -214,7 +214,7 @@ class Indicator():
 FreePN network daemon control and status tool.
                          """)
         dlg.set_authors(['Stephen L Arnold <nerdboy@gentoo.org>'])
-        dlg.set_artists(['Marianne Cruzat'])
+        dlg.set_artists(['Marianne Cruzat <marianne.y.cruzat@gmail.com>'])
         dlg.run()
         dlg.hide()
 
