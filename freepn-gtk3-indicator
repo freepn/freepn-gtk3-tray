@@ -223,7 +223,7 @@ class Indicator():
         dlg.set_name('About...')
         dlg.set_program_name('freepn-gtk3-indicator')
         dlg.set_version(APP_VERSION)
-        dlg.set_copyright('(c) Stephen L Arnold')
+        dlg.set_copyright('© 2019-2020 The FreePN Team')
         dlg.set_license_type(Gtk.License.AGPL_3_0)
         dlg.set_logo_icon_name('freepn')
         dlg.set_website('https://github.com/freepn')
