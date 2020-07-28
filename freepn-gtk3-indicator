@@ -36,8 +36,8 @@ def get_state_icon(state):
     """
     state_dict = {
         'CONNECTED': 'network-vpn-symbolic',
-        'WAITING': 'network-vpn-acquiring-symbolic',
-        'CONFIG': 'network-vpn-no-route-symbolic',
+        'WAITING': 'network-vpn-no-route-symbolic',
+        'CONFIG': 'network-vpn-acquiring-symbolic',
         'ERROR': 'network-error-symbolic',
         'STARTING': 'network-idle-symbolic',
         'NONE': 'network-offline-symbolic'
@@ -158,8 +158,7 @@ class Indicator():
                 new_state = msg_queue.pop().strip()
             # if there is a change in state, update the icon
             if old_state != new_state:
-                icon_name = get_state_icon(new_state)
-                self.indicator.set_icon_full(icon_name, new_state)
+                self.indicator.set_icon_full(get_state_icon(new_state), new_state)
                 # Notify.Notification.new(new_state, None, None).show()
                 # note the second label arg should be the longest possible label str
                 self.indicator.set_label(new_state.format().center(9), guide)
