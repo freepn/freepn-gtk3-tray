@@ -18,25 +18,48 @@ gi.require_version('AppIndicator3', '0.1')  # noqa
 gi.require_version('Notify', '0.7')  # noqa
 from gi.repository import Gtk, AppIndicator3, Notify
 
-from node_tools.helper_funcs import get_runtimedir
+try:
+    from node_tools.helper_funcs import get_runtimedir
+    state_file = Path(get_runtimedir()).joinpath('fpnd.state')
+except ImportError:
+    import os
+    state_file = Path(os.path.join('/run/fpnd', 'fpnd.state'))
 
 
 APPINDICATOR_ID = 'fpndindicator'
-state_file = Path(get_runtimedir()).joinpath('fpnd.state')
+APP_VERSION = '0.0.4'
 
 
 def get_state_icon(state):
     """
     Look up the state msg and return the icon name.
     """
-    state_dict = {
+    install_path = '/usr/share/icons/hicolor/scalable/status'
+    icon_name = 'network-freepn-connected-symbolic.svg'
+
+    fallback_dict = {
         'CONNECTED': 'network-vpn-symbolic',
-        'WAITING': 'network-vpn-acquiring-symbolic',
-        'CONFIG': 'network-vpn-no-route-symbolic',
+        'WAITING': 'network-vpn-no-route-symbolic',
+        'CONFIG': 'network-vpn-acquiring-symbolic',
         'ERROR': 'network-error-symbolic',
-        'STARTING': 'network-idle-symbolic',
+        'STARTING': 'network-vpn-acquiring-symbolic',
         'NONE': 'network-offline-symbolic'
     }
+
+    freepn_dict = {
+        'CONNECTED': 'network-freepn-connected-symbolic',
+        'WAITING': 'network-freepn-no-route-symbolic',
+        'CONFIG': 'network-freepn-acquiring-symbolic',
+        'ERROR': 'network-freepn-error-symbolic',
+        'STARTING': 'network-freepn-acquiring-symbolic',
+        'NONE': 'network-freepn-offline-symbolic'
+    }
+
+    state_dict = freepn_dict
+    connected_icon = Path(install_path).joinpath(icon_name)
+    if not connected_icon.exists():
+        state_dict = fallback_dict
+
     return state_dict.get(state, state_dict['NONE'])
 
 
@@ -143,6 +166,7 @@ class Indicator():
         Check for new state msg and update icon if new.
         """
         old_state = 'NONE'
+        new_state = 'NONE'
         guide = '999999999'
 
         while True:
@@ -152,8 +176,7 @@ class Indicator():
                 new_state = msg_queue.pop().strip()
             # if there is a change in state, update the icon
             if old_state != new_state:
-                icon_name = get_state_icon(new_state)
-                self.indicator.set_icon_full(icon_name, new_state)
+                self.indicator.set_icon_full(get_state_icon(new_state), new_state)
                 # Notify.Notification.new(new_state, None, None).show()
                 # note the second label arg should be the longest possible label str
                 self.indicator.set_label(new_state.format().center(9), guide)
@@ -184,12 +207,33 @@ class Indicator():
         item_separator = Gtk.SeparatorMenuItem()
         menu.append(item_separator)
 
+        item_about = Gtk.MenuItem(label='About')
+        item_about.connect('activate', self.about)
+        menu.append(item_about)
+
         item_quit = Gtk.MenuItem(label='Quit')
         item_quit.connect('activate', self.stop)
         menu.append(item_quit)
 
         menu.show_all()
         return menu
+
+    def about(self, source):
+        dlg = Gtk.AboutDialog()
+        dlg.set_name('About...')
+        dlg.set_program_name('freepn-gtk3-indicator')
+        dlg.set_version(APP_VERSION)
+        dlg.set_copyright('© 2019-2020 The FreePN Team')
+        dlg.set_license_type(Gtk.License.AGPL_3_0)
+        dlg.set_logo_icon_name('freepn')
+        dlg.set_website('https://github.com/freepn')
+        dlg.set_comments("""
+FreePN network daemon control and status tool.
+                         """)
+        dlg.set_authors(['Stephen L Arnold <nerdboy@gentoo.org>'])
+        dlg.set_artists(['Marianne Cruzat <marianne.y.cruzat@gmail.com>'])
+        dlg.run()
+        dlg.hide()
 
     def stop(self, source):
         Notify.uninit()
@@ -215,6 +259,7 @@ class Indicator():
         svc_msg = run_service_cmd(action='stop')
         if not svc_msg:
             svc_msg = 'Stopping...'
+        self.indicator.set_icon_full(get_state_icon('NONE'), 'NONE')
         Notify.Notification.new("Daemon status", svc_msg, None).show()
 
 
