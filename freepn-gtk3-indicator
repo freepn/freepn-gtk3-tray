@@ -34,14 +34,32 @@ def get_state_icon(state):
     """
     Look up the state msg and return the icon name.
     """
-    state_dict = {
+    install_path = '/usr/share/icons/hicolor/scalable/status'
+    icon_name = 'network-freepn-connected-symbolic.svg'
+
+    fallback_dict = {
         'CONNECTED': 'network-vpn-symbolic',
         'WAITING': 'network-vpn-no-route-symbolic',
         'CONFIG': 'network-vpn-acquiring-symbolic',
         'ERROR': 'network-error-symbolic',
-        'STARTING': 'network-idle-symbolic',
+        'STARTING': 'network-vpn-acquiring-symbolic',
         'NONE': 'network-offline-symbolic'
     }
+
+    freepn_dict = {
+        'CONNECTED': 'network-freepn-connected-symbolic',
+        'WAITING': 'network-freepn-no-route-symbolic',
+        'CONFIG': 'network-freepn-acquiring-symbolic',
+        'ERROR': 'network-freepn-error-symbolic',
+        'STARTING': 'network-freepn-acquiring-symbolic',
+        'NONE': 'network-freepn-offline-symbolic'
+    }
+
+    state_dict = freepn_dict
+    connected_icon = Path(install_path).joinpath(icon_name)
+    if not connected_icon.exists():
+        state_dict = fallback_dict
+
     return state_dict.get(state, state_dict['NONE'])
 
 
