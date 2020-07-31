@@ -27,7 +27,7 @@ except ImportError:
 
 
 APPINDICATOR_ID = 'fpndindicator'
-APP_VERSION = '0.0.4'
+APP_VERSION = '0.0.5'
 
 
 def get_state_icon(state):
