@@ -47,7 +47,7 @@ def get_state_icon(state):
     }
 
     freepn_dict = {
-        'CONNECTED': 'network-freepn-connected-symbolic',
+        'CONNECTED': 'network-freepn-connected-key-symbolic',
         'WAITING': 'network-freepn-no-route-symbolic',
         'CONFIG': 'network-freepn-acquiring-symbolic',
         'ERROR': 'network-freepn-error-symbolic',
