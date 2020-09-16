@@ -260,6 +260,7 @@ FreePN network daemon control and status tool.
         if not svc_msg:
             svc_msg = 'Stopping...'
         self.indicator.set_icon_full(get_state_icon('NONE'), 'NONE')
+        self.indicator.set_label('NONE'.format().center(9), '99999')
         Notify.Notification.new("Daemon status", svc_msg, None).show()
 
 
