@@ -27,7 +27,7 @@ except ImportError:
 
 
 APPINDICATOR_ID = 'fpndindicator'
-APP_VERSION = '0.0.5'
+APP_VERSION = '0.0.6'
 
 
 def get_state_icon(state):
@@ -83,16 +83,6 @@ def fetch_geoip():
     response = urllib.request.urlopen(request)
     payload = xmltodict.parse(response.read())
     return json.dumps(payload, indent=4, separators=(',', ': '))
-
-
-def fetch_joke():
-    """
-    Fetch a random joke from the nerdy category.
-    """
-    request = urllib.request.Request('http://api.icndb.com/jokes/random?limitTo=[nerdy]')
-    response = urllib.request.urlopen(request)
-    joke = json.loads(response.read())['value']['joke']
-    return joke
 
 
 def run_service_cmd(action='is-active'):
@@ -200,10 +190,6 @@ class Indicator():
         item_geoip.connect('activate', self.geoip)
         menu.append(item_geoip)
 
-        item_joke = Gtk.MenuItem(label='Joke')
-        item_joke.connect('activate', self.joke)
-        menu.append(item_joke)
-
         item_separator = Gtk.SeparatorMenuItem()
         menu.append(item_separator)
 
@@ -226,7 +212,7 @@ class Indicator():
         dlg.set_copyright('© 2019-2020 The FreePN Team')
         dlg.set_license_type(Gtk.License.AGPL_3_0)
         dlg.set_logo_icon_name('freepn')
-        dlg.set_website('https://github.com/freepn')
+        dlg.set_website('https://freepn.com/')
         dlg.set_comments("""
 FreePN network daemon control and status tool.
                          """)
@@ -238,9 +224,6 @@ FreePN network daemon control and status tool.
     def stop(self, source):
         Notify.uninit()
         Gtk.main_quit()
-
-    def joke(self, source):
-        Notify.Notification.new("Joke", fetch_joke(), None).show()
 
     def geoip(self, source):
         Notify.Notification.new("Geoip", fetch_geoip(), None).show()
