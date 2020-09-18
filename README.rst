@@ -23,7 +23,7 @@ And by "application" we mean a simple appindicator-based GUI which is
 basically just an icon with a menu. It loads in the indicator area or the
 system tray (whatever is available in your desktop environment). The icon's
 menu allows you to start and stop the daemon, as well as get daemon status
-and query the Ubuntu geoip location server.  The tray icon appearence will
+and query the Ubuntu geoip location server.  The tray icon appearance will
 update to show the current state of the network daemon.
 
 Functionally this app does (almost) nothing without having the above fpnd_
@@ -32,7 +32,7 @@ on the appropriate fpnd_ packages (for both Ubuntu and Gentoo).
 
 This app also depends on PyGobject, a GTK+3 desktop environment, and the associated
 gobject introspection libraries.  The minimal package deps are currently used
-in the freepn-gtk3-tray ebuild and deb packages linked in the fpnd readme.
+in the freepn-gtk3-tray ebuild and deb packages linked below.
 
 Lastly, the fpnd package will install the polkit rules required for the
 daemon controller commands used in the the GUI app.
@@ -45,8 +45,7 @@ Pre-install
 -----------
 
 See the Quick Start section of the fpnd_ readme file and install the PPA_
-for Ubuntu or the `python-overlay`_ for Gentoo, then make sure your local
-user is a member of the ``fpnd`` group.
+for Ubuntu or the `python-overlay`_ for Gentoo.
 
 
 .. _PPA: https://launchpad.net/~nerdboy/+archive/ubuntu/embedded
@@ -61,6 +60,12 @@ install the packages for your distro:
 
 * Gentoo - ``sudo emerge freepn-gtk3-tray``
 * Ubuntu - ``sudo apt-get install freepn-gtk3-indicator``
+
+Then make sure your local user is a member of the ``fpnd`` group.
+
+.. note:: For Gentoo be sure and enable the ``polkit`` USE flag for ``fpnd``
+          so you get proper permissions.
+
 
 Usage
 -----
@@ -83,7 +88,7 @@ displays the current daemon state using both the icon and labels, but
 exactly how they are displayed depends on both the desktop environment
 and the default theme and icons.  Desktop environments using gnome shell
 should display the labels in the status bar next to the icon, but in
-other despktops the labels may appear as (mouse-over) tooltips.
+other desktops the labels may appear as (mouse-over) tool-tips.
 
 Each "state" has a corresponding label and tray icon:
 
@@ -121,6 +126,6 @@ Note about states
   briefly at startup)
 * 'STARTING' is written once at startup and is updated very quickly after
 * 'WAITING' is written twice every (10) seconds until a state change
-* 'CONFIG' is written only on a cfg change event (both up and down)
+* 'CONFIG' is written only on a network change event (both up and down)
 * 'CONNECTED' is written once every (33) seconds until a state change
 * the tray icon only changes if the state message changes from previous state
