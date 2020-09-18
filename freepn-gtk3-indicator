@@ -174,26 +174,26 @@ class Indicator():
 
     def create_menu(self):
         menu = Gtk.Menu()
-        item_start = Gtk.MenuItem(label='Start daemon')
+        item_start = Gtk.MenuItem(label='Start')
         item_start.connect('activate', self.startd)
         menu.append(item_start)
 
-        item_stop = Gtk.MenuItem(label='Stop daemon')
+        item_stop = Gtk.MenuItem(label='Stop')
         item_stop.connect('activate', self.stopd)
         menu.append(item_stop)
 
-        item_status = Gtk.MenuItem(label='Get daemon status')
+        item_status = Gtk.MenuItem(label='Status')
         item_status.connect('activate', self.statusd)
         menu.append(item_status)
 
-        item_geoip = Gtk.MenuItem(label='Get geoip')
+        item_geoip = Gtk.MenuItem(label='Geoip')
         item_geoip.connect('activate', self.geoip)
         menu.append(item_geoip)
 
         item_separator = Gtk.SeparatorMenuItem()
         menu.append(item_separator)
 
-        item_about = Gtk.MenuItem(label='About')
+        item_about = Gtk.MenuItem(label='About FreePN')
         item_about.connect('activate', self.about)
         menu.append(item_about)
 
@@ -207,14 +207,15 @@ class Indicator():
     def about(self, source):
         dlg = Gtk.AboutDialog()
         dlg.set_name('About...')
-        dlg.set_program_name('freepn-gtk3-indicator')
+        dlg.set_program_name('FreePN GUI')
         dlg.set_version(APP_VERSION)
-        dlg.set_copyright('© 2019-2020 The FreePN Team')
+        dlg.set_copyright('© 2019-2020 Allieae, Inc')
         dlg.set_license_type(Gtk.License.AGPL_3_0)
         dlg.set_logo_icon_name('freepn')
-        dlg.set_website('https://freepn.com/')
+        dlg.set_website('https://www.freepn.org/')
+        dlg.set_website_label('www.freepn.org')
         dlg.set_comments("""
-FreePN network daemon control and status tool.
+FreePN network privacy control and status tool.
                          """)
         dlg.set_authors(['Stephen L Arnold <nerdboy@gentoo.org>'])
         dlg.set_artists(['Marianne Cruzat <marianne.y.cruzat@gmail.com>'])
