@@ -76,8 +76,12 @@ your session startup or run it from an X terminal to get some debug output::
 
   $ freepn-gtk3-indicator
 
+You can also see some screenshots of the icons and menu in `this section`_ of
+the fpnd README file.
+
 
 .. _fpnd: https://github.com/freepn/fpnd
+.. _this section: https://github.com/freepn/fpnd#some-screenshots
 
 
 User Node State
