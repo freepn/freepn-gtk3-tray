@@ -103,7 +103,8 @@ The user node should stay in the 'CONNECTED' state until user shutdown of the
 daemon, in which case it returns to the stopped 'NONE' state.  Several events
 (mostly external) will cause the user node state to change *temporarily* from
 the 'CONNECTED' state to a short sequence of 'WAITING' and 'CONFIG' states, as
-well as a possible 'ERROR' state, before returning to the 'CONNECTED' state.
+well as a possible 'ERROR' state, before returning to the 'CONNECTED' state
+(where "short" is typically a minute or less).
 
 
 State change events
@@ -115,12 +116,18 @@ State change events
 
   + user node's upstream peer goes offline
   + user node's upstream route goes bad (peer is "wedged")
+  + user node's downstream peer sends a bad route msg
   + user_node is attached to exit node and network closure is triggered
   + user node is (randomly) selected to attach new node(s)
 
+.. note:: The transition time for a reconfiguration event should be no more
+          than two or three minutes *maximum*, so if your state is "stuck"
+          on WAITING or CONFIG for longer than three minutes or so, stopping
+          and starting again should get you connected to a fresh peer.
 
-Note about states
------------------
+
+About state message updates
+---------------------------
 
 * 'NONE' state is written once on shutdown and updated in the GUI (may be seen
   briefly at startup)
