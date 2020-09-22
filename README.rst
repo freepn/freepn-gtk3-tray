@@ -34,8 +34,23 @@ This app also depends on PyGobject, a GTK+3 desktop environment, and the associa
 gobject introspection libraries.  The minimal package deps are currently used
 in the freepn-gtk3-tray ebuild and deb packages linked below.
 
-Lastly, the fpnd package will install the polkit rules required for the
+Lastly, the fpnd_ package will install the polkit rules required for the
 daemon controller commands used in the the GUI app.
+
+
+More Docs for FreePN tools
+==========================
+
+* `DNS Privacy`_ - DNS and your online privacy
+* `DNS Setup`_ - Local DNS setup
+* `fpnd Quick Start`_ - Quick install and setup instructions
+* `fpnd Release Notes`_ - fpnd Software Version Description (latest release)
+
+
+.. _DNS Privacy: https://github.com/freepn/fpnd/blob/master/README_DNS_privacy.rst
+.. _DNS Setup: https://github.com/freepn/fpnd/blob/master/README_DNS_setup.rst
+.. _fpnd Quick Start: https://github.com/freepn/fpnd#quick-start
+.. _fpnd Release Notes: https://github.com/freepn/fpnd/blob/master/README_0.9.0-release-notes.rst
 
 
 Getting Started
@@ -133,10 +148,12 @@ State change events
 About state message updates
 ---------------------------
 
+* state messages are written by fpnd_ to ``/run/fpnd/fpnd.state`` and consumed
+  by the GUI
+* the tray icon and status only changes if the state message changes from previous state
 * 'NONE' state is written once on shutdown and updated in the GUI (may be seen
   briefly at startup)
 * 'STARTING' is written once at startup and is updated very quickly after
 * 'WAITING' is written twice every (10) seconds until a state change
 * 'CONFIG' is written only on a network change event (both up and down)
 * 'CONNECTED' is written once every (33) seconds until a state change
-* the tray icon only changes if the state message changes from previous state
