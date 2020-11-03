@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import json
 import signal
 import subprocess
@@ -18,16 +19,15 @@ gi.require_version('AppIndicator3', '0.1')  # noqa
 gi.require_version('Notify', '0.7')  # noqa
 from gi.repository import Gtk, AppIndicator3, Notify
 
-try:
-    from node_tools.helper_funcs import get_runtimedir
-    state_file = Path(get_runtimedir()).joinpath('fpnd.state')
-except ImportError:
-    import os
-    state_file = Path(os.path.join('/run/fpnd', 'fpnd.state'))
 
-
+APP_VERSION = '0.0.8'
 APPINDICATOR_ID = 'fpndindicator'
-APP_VERSION = '0.0.7'
+FPND_UPGRADE_MSG = '''
+  Your FreePN network daemon is out-of-date and no longer
+  compatible with the FreePN network infrastructure. Please
+  update your system packages as soon as possible.
+'''
+state_file = Path(os.path.join('/run/fpnd', 'fpnd.state'))
 
 
 def get_state_icon(state):
@@ -43,15 +43,17 @@ def get_state_icon(state):
         'CONFIG': 'network-vpn-acquiring-symbolic',
         'ERROR': 'network-error-symbolic',
         'STARTING': 'network-vpn-acquiring-symbolic',
+        'UPGRADE': 'network-offline-symbolic',
         'NONE': 'network-offline-symbolic'
     }
 
     freepn_dict = {
-        'CONNECTED': 'network-freepn-connected-key-symbolic',
+        'CONNECTED': 'network-freepn-connected-key2-symbolic',
         'WAITING': 'network-freepn-no-route-symbolic',
         'CONFIG': 'network-freepn-acquiring-symbolic',
         'ERROR': 'network-freepn-error-symbolic',
         'STARTING': 'network-freepn-acquiring-symbolic',
+        'UPGRADE': 'network-freepn-offline-symbolic',
         'NONE': 'network-freepn-offline-symbolic'
     }
 
@@ -166,6 +168,8 @@ class Indicator():
                 new_state = msg_queue.pop().strip()
             # if there is a change in state, update the icon
             if old_state != new_state:
+                if new_state == 'UPGRADE':
+                    Notify.Notification.new("Version Error!!", FPND_UPGRADE_MSG, None).show()
                 self.indicator.set_icon_full(get_state_icon(new_state), new_state)
                 # Notify.Notification.new(new_state, None, None).show()
                 # note the second label arg should be the longest possible label str
