@@ -1,3 +1,28 @@
+0.0.8 (2020-11-03)
+------------------
+- Changelog.rst: add updates for latest release. [Stephen L Arnold]
+- README.rst: add usage notes section for version checking. [Stephen L Arnold]
+- Freepn-gtk3-indicator: add version handling, stale version indicator msg. [Stephen L Arnold]
+- README.rst: add pointers to fpnd docs, update state notes. [Stephen Arnold]
+- Add pointer to screenshots in fpnd readme. [Stephen Arnold]
+- Add note about reconfiguration time to README.rst. [Stephen Arnold]
+- README.rst: add note about polkit USE flag and cleanup typos. [Stephen Arnold]
+
+
+0.0.7 (2020-09-18)
+------------------
+- Freepn-gtk3-indicator: bump version for release/packaging. [Stephen Arnold]
+- Freepn-gtk3-indicator: fix all the About strings. [Stephen Arnold]
+
+
+0.0.6 (2020-09-16)
+------------------
+- Bump version and remove superfluous menu option. [Stephen Arnold]
+- README.rst: add some info on (daemon) state messages. [Stephen Arnold]
+- README.rst: sync up with fpnd doc updates, add pointer to Quick Start. [Stephen Arnold]
+- Fix stop state and pick up changelog entries. [Stephen Arnold]
+
+
 0.0.5 (2020-07-31)
 ------------------
 - Freepn-gtk3-indicator: bump version for packaging. [Stephen Arnold]
