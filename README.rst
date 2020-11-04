@@ -60,11 +60,11 @@ Pre-install
 -----------
 
 See the Quick Start section of the fpnd_ readme file and install the PPA_
-for Ubuntu or the `python-overlay`_ for Gentoo.
+for Ubuntu or the `freepn-overlay`_ for Gentoo.
 
 
 .. _PPA: https://launchpad.net/~nerdboy/+archive/ubuntu/embedded
-.. _python-overlay: https://github.com/freepn/python-overlay
+.. _freepn-overlay: https://github.com/freepn/freepn-overlay
 
 
 Install
@@ -99,6 +99,36 @@ the fpnd README file.
 .. _this section: https://github.com/freepn/fpnd#some-screenshots
 
 
+Usage Notes
+-----------
+
+Starting with the ``fpnd-0.9.7`` and ``freepn-gtk3-tray-0.0.8`` releases,
+both packages include version detection and handling for the ``fpnd``
+daemon component. This adds a new 'UPGRADE' state message and a GUI
+indicator message triggered if the installed ``fpnd`` version is too
+old or otherwise incompatible with the running infra node version.
+The latest version of ``fpnd`` adds the running version to the initial
+"node announce" message, which is checked against the minimum compatible
+version (currently ``0.9.6``) and then accepted if the user node version
+is greater-than or equal-to the minimum "base" version.
+
+In the event of a version error, newer user nodes will log the error,
+update the state message, and then shut down (daemon status is "crashed").
+If using the newer GUI release, there will be a corresponding indicator
+pop-up message.  However, older versions can only write the error message
+to the ``fpnd`` log file, so you would need to search the log file for
+the string ``UPGRADE_REQUIRED``, eg::
+
+  $ grep UPGRADE_REQUIRED /var/log/fpnd/fpnd.log
+
+(or just ``/var/log/fpnd.log`` on Gentoo)
+
+Since there is no version error handler in older versions of ``fpnd``
+your node will appear to be "stuck" in the ``WAITING`` state and will be
+blocked for at least 15 minutes; the answer is **upgrade your system**
+and try connecting again.
+
+
 User Node State
 ===============
 
@@ -113,6 +143,7 @@ Each "state" has a corresponding label and tray icon:
 
 * when ``fpnd`` daemon is stopped: state message is 'NONE'
 * when the daemon is started: state is 'WAITING' before moon is queried
+* if the daemon version is incompatible: state is 'UPGRADE' then shuts down
 * after moon query is successful: state changes to 'STARTING'
 * after announce/cfg messages are sent: state is 'WAITING'
 * valid reply to cfg message triggers state change to 'CONFIG'
@@ -130,7 +161,8 @@ State change events
 -------------------
 
 * starting and stopping of the daemon are user-initiated events
-* 'CONFIG' events are generated after successful startup
+* an 'UPGRADE' event is generated if the ``fpnd`` version is incompatible
+* a 'CONFIG' events is generated after successful startup
 * 'CONFIG' events are also generated if:
 
   + user node's upstream peer goes offline
@@ -157,3 +189,4 @@ About state message updates
 * 'WAITING' is written twice every (10) seconds until a state change
 * 'CONFIG' is written only on a network change event (both up and down)
 * 'CONNECTED' is written once every (33) seconds until a state change
+* 'UPGRADE' is written once before auto-shutdown
