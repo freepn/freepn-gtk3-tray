@@ -12,8 +12,9 @@ Linux.
     :target: https://github.com/freepn/freepn-gtk3-tray/releases
     :alt: GitHub tag (latest SemVer, including pre-release)
 
-.. image:: https://travis-ci.org/freepn/freepn-gtk3-tray.svg?branch=master
-    :target: https://travis-ci.org/freepn/freepn-gtk3-tray
+.. image:: https://img.shields.io/github/workflow/status/freepn/freepn-gtk3-tray/ci
+    :target: https://github.com/freepn/freepn-gtk3-tray/actions?query=workflow:ci
+    :alt: GitHub CI Workflow Status
 
 .. image:: https://img.shields.io/codeclimate/maintainability/freepn/freepn-gtk3-tray
     :target: https://codeclimate.com/github/freepn/freepn-gtk3-tray
