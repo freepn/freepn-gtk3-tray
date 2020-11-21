@@ -3,7 +3,10 @@
 import ast
 import codecs
 
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 
 def read_file(filename):
@@ -68,5 +71,10 @@ setup(
         'Topic :: Security',
         'Topic :: System :: Networking',
         'Topic :: System :: Operating System Kernels :: Linux',
+    ],
+    install_requires=[
+        'pycairo',
+        'pygobject',
+        'xmltodict',
     ],
 )
