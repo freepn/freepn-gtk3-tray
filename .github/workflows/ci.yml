@@ -40,6 +40,9 @@ jobs:
     - name: Lint with tox
       run: |
         tox -e lint
+    - name: Dev install with tox
+      run: |
+        tox -e dev
     - name: Deploy with tox
       run: |
         tox -e deploy
