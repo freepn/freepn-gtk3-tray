@@ -37,6 +37,7 @@ setup(
     license='AGPL-3.0',
     description='Freepn tray controller for fpnd.',
     long_description=read_file('README.rst'),
+    long_description_content_type='text/x-rst',
     url='https://github.com/freepn/freepn-gtk3-tray',
     author='Stephen L Arnold',
     author_email='nerdboy@gentoo.org',
@@ -73,7 +74,7 @@ setup(
         'Topic :: System :: Operating System Kernels :: Linux',
     ],
     install_requires=[
-        'pycairo',
+        'pycairo>=1.20.0',
         'pygobject',
         'xmltodict',
     ],
